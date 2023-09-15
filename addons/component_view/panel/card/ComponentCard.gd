@@ -1,29 +1,32 @@
-tool
+@tool
 extends Control
-var plugin:EditorPlugin
-export var component_name = "Empty"
-export var scene:PackedScene
-var scene_path: NodePath
+@export var plugin:EditorPlugin
+@export var component_name = "Empty"
+@export var scene:PackedScene
+
 var texture = null
-var selected = false
+var _selected = false
 
 func _ready():
-	hint_tooltip = component_name
+	tooltip_text = component_name
 	if scene == null:
 		return
 	if texture != null:
+		var image = Image.load_from_file("res://.scene_previews/Props/Pillar.png")
+		var texture = ImageTexture.create_from_image(image)
 		$TextureRect.texture = texture
 	pass
 
 
 func _on_ComponentCard_gui_input(event):
 	if event is InputEventMouseButton:
-		if event.is_pressed() and event.button_index == BUTTON_LEFT:
-			if event.doubleclick:
+		if event.is_pressed() and event.button_index == MOUSE_BUTTON_LEFT:
+			if event.double_click:
 				var selected = plugin.get_editor_interface().get_selection().get_selected_nodes()
-				if selected.empty():
+				if selected.is_empty():
 					return
 				var owner_node = plugin.get_editor_interface().get_edited_scene_root()
+				_selected = true
 				add_to_scene(selected[0],owner_node)
 			else:
 				selected(null)
@@ -31,35 +34,24 @@ func _on_ComponentCard_gui_input(event):
 
 func selected(zelf):
 	if zelf == null:
-		selected = !selected
+		_selected = !_selected
 		get_tree().call_group("element_editor_card","selected",self)
 		get_tree().call_group("element_item_display","update_selection",self)
 	elif zelf != self:
-		selected = false
-	$ColorRect.visible = selected
+		_selected = false
+	$ColorRect.visible = _selected
 	pass
 
 func searched_for(text:String):
-	if text.empty():
+	if text.is_empty():
 		visible = true
 	else:
 		visible = component_name.to_lower().find(text) >-1
 
 func add_to_scene(selected_node:Node,owner_node:Node):
-	if selected:
-		var new_node = scene.instance()
+	if _selected:
+		var new_node = scene.instantiate()
 		new_node.name = component_name
-		new_node.connect("tree_entered",self,"update_owner",[new_node,owner_node],CONNECT_ONESHOT)
-		selected_node.call_deferred("add_child",new_node)
+		new_node.tree_entered.connect(func(): new_node.owner = owner_node,CONNECT_ONE_SHOT)
+		selected_node.add_child(new_node)
 	pass
-
-func update_owner(new_node,owner_node):
-	new_node.owner = owner_node
-	pass
-
-
-func get_drag_data(position: Vector2):
-	return {
-		files = [scene_path],
-		type = "files",
-	}

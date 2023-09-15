@@ -1,4 +1,4 @@
-tool
+@tool
 extends "./CollectionLoader.gd"
 
 func _ready():

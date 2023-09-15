@@ -1,7 +1,7 @@
-tool
+@tool
 extends "../ImportStep.gd"
 
-func post_process(child:Spatial):
+func post_process(child:Node3D):
 	var shape = child.mesh.create_convex_shape()
 	var collider = CollisionShape.new()
 	collider.shape = shape

@@ -1,8 +1,8 @@
-tool
-extends Spatial
+@tool
+extends Node3D
 
-export var width = 1
-export var heigth = 1
+@export var width = 1
+@export var heigth = 1
 
 
 func _ready():

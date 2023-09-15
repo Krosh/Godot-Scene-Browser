@@ -1,4 +1,4 @@
-tool # Needed so it runs in the editor.
+@tool # Needed so it runs in the editor.
 extends "./ImportPipeline.gd"
 
 func _init():

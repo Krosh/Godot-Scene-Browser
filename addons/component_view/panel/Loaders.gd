@@ -1,7 +1,7 @@
-tool
+@tool
 extends Node
 
-export var root_path = "res://assets/components/"
+@export var root_path = "res://assets/components/"
 var plugin
 
 
@@ -16,13 +16,15 @@ func _find_mesh(node: Node):
 	for item in node.get_children():
 		mesh = _find_mesh(item)
 		if mesh:
-			if not mesh.get_faces().empty():
-				return mesh
+			return mesh
+
 
 func load_all(plugin:EditorPlugin):
 	var datas = []
 	var collections = {}
 	var icon_map = {}
+
+	print("plugin", plugin)
 	if plugin != null:
 		for child in get_children():
 			var data = child.load_collections(root_path)
@@ -34,7 +36,7 @@ func load_all(plugin:EditorPlugin):
 				#Map the individual items to their meshes.
 				for item in data_array:
 					if item.scene is PackedScene:
-						var root = item.scene.instance(PackedScene.GEN_EDIT_STATE_DISABLED) as Node
+						var root = item.scene.instantiate(PackedScene.GEN_EDIT_STATE_DISABLED) as Node
 						var mesh = _find_mesh(root)
 						if mesh != null:
 							icon_map[item] = mesh
@@ -55,8 +57,6 @@ func load_all(plugin:EditorPlugin):
 		else:
 			missing_icon_map[item] = icon_map[item]
 
-	print(missing_icon_map.size())
-
 	var icons = plugin.get_editor_interface().make_mesh_previews(missing_icon_map.values(),256)
 	#Place all the icons into the correct items.
 	for i in missing_icon_map.keys().size():
@@ -74,20 +74,14 @@ func make_preview_key(item):
 
 func load_preview_if_cached(item)->Texture:
 	var key = make_preview_key(item)
-	var img = ImageTexture.new()
-	if not File.new().file_exists(key):
-		return null
-	var err = img.load(key)
-	#print("checking if "+key+" exists")
-	if err == OK:
-		#print(key+" exists")
-		return img
-	else:
-		return null
+	var image = Image.load_from_file(key)
+	var texture = ImageTexture.create_from_image(image)
+	return texture
+
 
 func save_preview_to_cache(item):
-	Directory.new().make_dir_recursive(make_root(item))
+	DirAccess.open("res://").make_dir_recursive(".scene_previews/" + item.collection)
 	var export_path = make_preview_key(item)
-	var export_img = item.icon.get_data()
+	var export_img = item.icon.get_image()
 	export_img.convert(Image.FORMAT_RGBA8)
 	export_img.save_png(export_path)

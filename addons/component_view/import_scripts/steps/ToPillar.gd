@@ -1,7 +1,7 @@
-tool
+@tool
 extends "../ImportStep.gd"
 
-func post_process(child:Spatial):
+func post_process(child:Node3D):
 	var pillar_tool = PillarTool.new()
 	var height = child.mesh.get_aabb().size.y
 	var scene = PackedScene.new()

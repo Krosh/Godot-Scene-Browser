@@ -1,20 +1,18 @@
-tool
+@tool
 extends EditorPlugin
 
 const ComponentView = preload("res://addons/component_view/panel/ComponentView.tscn")
-var view :Control
-export var component_path = "res://assets/components/"
+var view
+@export var component_path = "assets/components/"
 
 func _enter_tree():
-	view = ComponentView.instance()
-	view.plugin = self
+	view = ComponentView.instantiate()
 	add_control_to_bottom_panel(view,"Scene Browser")
+	view.set_plugin(self)
 
-	var directory = Directory.new()
-	if(not directory.dir_exists(component_path)):
-		if not directory.dir_exists("res://assets"):
-			directory.make_dir("res://assets")
-		directory.make_dir(component_path)
+	var dir = DirAccess.open("res://")
+	if(not dir.dir_exists(component_path)):
+		dir.make_dir(component_path)
 
 	pass
 

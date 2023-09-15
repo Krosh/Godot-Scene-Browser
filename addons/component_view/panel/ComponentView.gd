@@ -1,21 +1,22 @@
-tool
+@tool
 extends Control
 const ItemContainer = preload("./card/itemContainer.gd")
 
-onready var loaders = $"%Loaders"
-var plugin:EditorPlugin
+@onready var loaders = $"%Loaders"
+var plugin
 
-func _ready():
+func set_plugin(item):
 	loaders.plugin = plugin
 	$"%AddToSceneButton".plugin = plugin
+	plugin = item
 	reload()
-	pass
 
 func reload():
+	$"%AddToSceneButton".plugin = plugin
 	var items_root = $"%ItemsRootContainer"
 	for child in items_root.get_children():
 		#Remove like this, so we can not free the child while things are happening on it.
-		(child as Node).connect("tree_exited",self,"clear_child",[child])
+		#(child as Node).tree_exited.connect(clear_child)
 		items_root.remove_child(child)
 		pass
 
@@ -39,6 +40,6 @@ func create_collection(collection_name:String,data:Array,category_list:ItemList,
 	container.items = data
 	container.plugin = plugin
 	#Set up signals for searching.
-	category_list.connect("selection_finished",container,"was_selected")
-	items_root.call_deferred("add_child",container)
+	category_list.selection_finished.connect(container.was_selected)
+	items_root.add_child(container)
 	pass

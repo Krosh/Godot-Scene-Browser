@@ -1,18 +1,18 @@
 #Takes in up to 4 scenes (top,mid,bottom,single) and creates a stack from them
 #Useful for pillars and walls.
-tool
-extends Spatial
+@tool
+extends Node3D
 class_name StairTool, "../assets/pillar.png"
 
-export(float) var bottom_height = 0.0
-export(float) var mid_height = 0.0
+@export(float) var bottom_height = 0.0
+@export(float) var mid_height = 0.0
 
-export(int) var full_height = 1 setget set_height
+@export(int) var full_height = 1 setget set_height
 
-export(PackedScene) var bottom
-export(PackedScene) var middle
-export(PackedScene) var top
-export(PackedScene) var single
+@export(PackedScene) var bottom
+@export(PackedScene) var middle
+@export(PackedScene) var top
+@export(PackedScene) var single
 
 func _ready():
 	if(get_child_count() == 0):
@@ -27,13 +27,13 @@ func set_height(new):
 		pass
 	var offset = 0
 	if full_height == 1:
-		var child = single.instance() as Node
+		var child = single.instantiate() as Node
 		child.set_meta("dynamic",true)
 		child.connect("ready",self,"set_child_owner",[child],CONNECT_ONESHOT)
 		add_child(child)
 
 	elif full_height > 1:
-		var child = bottom.instance() as Spatial
+		var child = bottom.instantiate() as Node3D
 		child.set_meta("dynamic",true)
 		child.connect("ready",self,"set_child_owner",[child],CONNECT_ONESHOT)
 		add_child(child)
@@ -41,7 +41,7 @@ func set_height(new):
 
 		if full_height-2>0:
 			for i in full_height-2:
-				var mid_child = top.instance() as Spatial
+				var mid_child = top.instantiate() as Node3D
 				mid_child.set_meta("dynamic",true)
 				mid_child.transform.origin.y = offset
 				mid_child.connect("ready",self,"set_child_owner",[mid_child],CONNECT_ONESHOT)
@@ -50,7 +50,7 @@ func set_height(new):
 				pass
 			pass
 
-		var top_child = top.instance() as Spatial
+		var top_child = top.instantiate() as Node3D
 		top_child.set_meta("dynamic",true)
 		top_child.transform.origin.y = offset
 		top_child.connect("ready",self,"set_child_owner",[top_child],CONNECT_ONESHOT)

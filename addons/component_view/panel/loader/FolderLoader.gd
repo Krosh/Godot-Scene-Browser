@@ -1,22 +1,20 @@
-tool
+@tool
 extends Node
 
  #The root folder, and get all files.
 func get_dir_contents(rootPath: String) -> Array:
 	var files = []
 	var directories = []
-	var dir = Directory.new()
-
-	var error = dir.open(rootPath)
-	if error == OK:
-		dir.list_dir_begin(true, false)
+	var dir = DirAccess.open(rootPath)
+	if dir:
+		dir.list_dir_begin()
 		_add_dir_contents(dir, files, directories)
 	else:
-		print_debug(("An error occurred when trying to access path %s. "%rootPath) +str(error))
+		print_debug(("An error occurred when trying to access path %s. "%rootPath))
 
 	return [files, directories]
 
-func _add_dir_contents(dir: Directory, files: Array, directories: Array):
+func _add_dir_contents(dir: DirAccess, files: Array, directories: Array):
 	var file_name = dir.get_next()
 
 	while (file_name != ""):
@@ -24,9 +22,8 @@ func _add_dir_contents(dir: Directory, files: Array, directories: Array):
 
 		if dir.current_is_dir():
 			#print("Found directory: %s" % path)
-			var subDir = Directory.new()
-			subDir.open(path)
-			subDir.list_dir_begin(true, false)
+			var subDir = DirAccess.open(path)
+			subDir.list_dir_begin()
 			directories.append(path)
 			_add_dir_contents(subDir, files, directories)
 		else:

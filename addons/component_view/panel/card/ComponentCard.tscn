@@ -1,9 +1,9 @@
-[gd_scene load_steps=5 format=2]
+[gd_scene load_steps=5 format=3 uid="uid://cw2bxr7iio67e"]
 
-[ext_resource path="res://addons/component_view/assets/default.png" type="Texture" id=1]
-[ext_resource path="res://addons/component_view/panel/card/ComponentCard.gd" type="Script" id=2]
+[ext_resource type="Texture2D" uid="uid://c2jplfiif5lg4" path="res://addons/component_view/assets/default.png" id="1"]
+[ext_resource type="Script" path="res://addons/component_view/panel/card/ComponentCard.gd" id="2"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 
 uniform float thickness = 0.1;
@@ -17,31 +17,33 @@ void fragment(){
 	}
 }"
 
-[sub_resource type="ShaderMaterial" id=2]
-shader = SubResource( 1 )
-shader_param/thickness = 0.01
+[sub_resource type="ShaderMaterial" id="2"]
+shader = SubResource("1")
 
 [node name="ComponentCard" type="Control" groups=["element_editor_card"]]
-margin_right = 80.0
-margin_bottom = 80.0
-rect_min_size = Vector2( 80, 80 )
-hint_tooltip = "Empty"
-script = ExtResource( 2 )
-
-[node name="TextureRect" type="TextureRect" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
-rect_min_size = Vector2( 80, 80 )
-mouse_filter = 2
-texture = ExtResource( 1 )
-expand = true
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 108.0
+offset_bottom = 60.0
+tooltip_text = "Empty"
+script = ExtResource("2")
 
 [node name="ColorRect" type="ColorRect" parent="."]
-visible = false
-material = SubResource( 2 )
+material = SubResource("2")
+layout_mode = 0
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color( 0.788235, 0.509804, 0.368627, 1 )
+color = Color(0.831373, 0.462745, 0.486275, 1)
+
+[node name="TextureRect" type="TextureRect" parent="."]
+custom_minimum_size = Vector2(256, 256)
+layout_mode = 0
+offset_left = 1.0
+offset_right = 1.0
+mouse_filter = 2
+texture = ExtResource("1")
+expand_mode = 1
 
 [connection signal="gui_input" from="." to="." method="_on_ComponentCard_gui_input"]

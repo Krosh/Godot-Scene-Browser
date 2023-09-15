@@ -1,4 +1,4 @@
-tool
+@tool
 extends "./FolderLoader.gd"
 
 var extension = "tscn"
@@ -27,8 +27,7 @@ func load_collections(root):
 				collections[coll_name].append({
 					"name": key.replace(collection_name,"").replace("/","").replace(".%s" % extension,""),
 					"scene": meshes[key],
-					"collection": coll_name,
-					"path": root.plus_file(key),
+					"collection": coll_name
 				})
 				pass
 		pass
