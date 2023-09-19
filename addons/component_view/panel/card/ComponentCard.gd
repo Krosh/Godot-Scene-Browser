@@ -12,8 +12,6 @@ func _ready():
 	if scene == null:
 		return
 	if texture != null:
-		var image = Image.load_from_file("res://.scene_previews/Props/Pillar.png")
-		var texture = ImageTexture.create_from_image(image)
 		$TextureRect.texture = texture
 	pass
 
